@@ -1,0 +1,17 @@
+export const CATEGORIES = [
+  { id: 'wealth',        label: 'Wealth',           letter: 'W' },
+  { id: 'freedom',       label: 'Financial Freedom', letter: 'F' },
+  { id: 'business',      label: 'Business',          letter: 'B' },
+  { id: 'career',        label: 'Career',            letter: 'C' },
+  { id: 'health',        label: 'Health',            letter: 'H' },
+  { id: 'fitness',       label: 'Fitness',           letter: 'Fi' },
+  { id: 'confidence',    label: 'Confidence',        letter: 'Co' },
+  { id: 'selfesteem',    label: 'Self-Esteem',       letter: 'S' },
+  { id: 'gratitude',     label: 'Gratitude',         letter: 'G' },
+  { id: 'happiness',     label: 'Happiness',         letter: 'Ha' },
+  { id: 'relationships', label: 'Relationships',     letter: 'R' },
+  { id: 'growth',        label: 'Personal Growth',   letter: 'P' },
+  { id: 'mental',        label: 'Mental Wellness',   letter: 'M' },
+  { id: 'mindfulness',   label: 'Mindfulness',       letter: 'Mi' },
+  { id: 'learning',      label: 'Learning',          letter: 'L' },
+];

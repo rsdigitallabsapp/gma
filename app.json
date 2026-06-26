@@ -2,6 +2,19 @@
   "expo": {
     "name": "GMA",
     "slug": "GMA",
-    "version": "1.0.0"
+    "scheme": "gma",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "GMA needs your microphone to hear you say your affirmation aloud.",
+          "speechRecognitionPermission": "GMA uses speech recognition to confirm you've said your affirmation three times."
+        }
+      ],
+      "expo-notifications"
+    ]
   }
 }
