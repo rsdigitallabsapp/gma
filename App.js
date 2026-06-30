@@ -45,7 +45,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={{ flex: 1, backgroundColor: '#0A0D17' }} onLayout={onLayoutRootView}>
+      <View style={{ flex: 1, backgroundColor: '#13110D' }} onLayout={onLayoutRootView}>
         <StatusBar style="light" />
         <RootNavigator />
       </View>

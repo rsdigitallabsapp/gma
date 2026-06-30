@@ -16,6 +16,8 @@ import { EditCategoriesScreen } from '../screens/settings/EditCategoriesScreen';
 import { PaywallScreen } from '../screens/settings/PaywallScreen';
 import { CustomAffirmationsScreen } from '../screens/settings/CustomAffirmationsScreen';
 import { AddAffirmationScreen } from '../screens/settings/AddAffirmationScreen';
+import { HistoryScreen } from '../screens/HistoryScreen';
+import { StatsScreen } from '../screens/StatsScreen';
 
 const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -72,7 +74,7 @@ export function RootNavigator() {
         initialRouteName={startRoute}
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#0A0D17' },
+          contentStyle: { backgroundColor: '#13110D' },
           animation: 'fade',
         }}
       >
@@ -87,6 +89,8 @@ export function RootNavigator() {
         <Stack.Screen name="Paywall" component={PaywallScreen} />
         <Stack.Screen name="CustomAffirmations" component={CustomAffirmationsScreen} />
         <Stack.Screen name="AddAffirmation" component={AddAffirmationScreen} />
+        <Stack.Screen name="History" component={HistoryScreen} />
+        <Stack.Screen name="Stats" component={StatsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

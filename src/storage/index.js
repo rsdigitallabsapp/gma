@@ -14,7 +14,19 @@ const KEYS = {
   TODAY_AFFIRMATION: 'todayAffirmation',
   IS_PREMIUM: 'isPremium',
   CUSTOM_AFFIRMATIONS: 'customAffirmations',
+  FAVORITES: 'favorites',
+  LOCKED_AFFIRMATION: 'lockedAffirmation',
+  LOCK_EXPIRES_DATE: 'lockExpiresDate',
+  AFFIRMATION_HISTORY: 'affirmationHistory',
+  LONGEST_STREAK: 'longestStreak',
+  TOTAL_DAYS: 'totalDays',
+  SHIELD_COUNT: 'shieldCount',
+  SHIELD_MONTH: 'shieldMonth',
 };
+
+const FREE_CATEGORY_LIMIT = 5;
+
+export { FREE_CATEGORY_LIMIT };
 
 export const Storage = {
   isOnboarded: () => storage.getBoolean(KEYS.ONBOARDED) ?? false,
@@ -37,6 +49,10 @@ export const Storage = {
 
   getStreak: () => storage.getNumber(KEYS.STREAK) ?? 0,
   setStreak: (n) => storage.set(KEYS.STREAK, n),
+
+  getLongestStreak: () => storage.getNumber(KEYS.LONGEST_STREAK) ?? 0,
+
+  getTotalDays: () => storage.getNumber(KEYS.TOTAL_DAYS) ?? 0,
 
   getLastCompletedDate: () => storage.getString(KEYS.LAST_COMPLETED_DATE) ?? '',
   setLastCompletedDate: (dateStr) => storage.set(KEYS.LAST_COMPLETED_DATE, dateStr),
@@ -80,6 +96,78 @@ export const Storage = {
     storage.set(KEYS.CUSTOM_AFFIRMATIONS, JSON.stringify(current.filter(a => a.id !== id)));
   },
 
+  // Favorites
+  getFavorites: () => {
+    const raw = storage.getString(KEYS.FAVORITES);
+    return raw ? JSON.parse(raw) : [];
+  },
+  toggleFavorite: (id) => {
+    const favs = Storage.getFavorites();
+    const updated = favs.includes(id) ? favs.filter(f => f !== id) : [...favs, id];
+    storage.set(KEYS.FAVORITES, JSON.stringify(updated));
+  },
+  isFavorite: (id) => Storage.getFavorites().includes(id),
+
+  // Affirmation lock — keep same affirmation for a set duration
+  getLockedAffirmation: () => {
+    const raw = storage.getString(KEYS.LOCKED_AFFIRMATION);
+    if (!raw) return null;
+    const expires = storage.getString(KEYS.LOCK_EXPIRES_DATE) ?? '';
+    if (expires !== 'forever' && expires < Storage.todayString()) {
+      storage.remove(KEYS.LOCKED_AFFIRMATION);
+      storage.remove(KEYS.LOCK_EXPIRES_DATE);
+      return null;
+    }
+    return JSON.parse(raw);
+  },
+  setAffirmationLock: (affirmation, expiresDate) => {
+    storage.set(KEYS.LOCKED_AFFIRMATION, JSON.stringify(affirmation));
+    storage.set(KEYS.LOCK_EXPIRES_DATE, expiresDate ?? 'forever');
+    Storage.setTodayAffirmation(affirmation);
+  },
+  clearAffirmationLock: () => {
+    storage.remove(KEYS.LOCKED_AFFIRMATION);
+    storage.remove(KEYS.LOCK_EXPIRES_DATE);
+  },
+  getLockExpiresDate: () => storage.getString(KEYS.LOCK_EXPIRES_DATE) ?? null,
+
+  // Affirmation history — most recent first, capped at 90 entries
+  getHistory: () => {
+    const raw = storage.getString(KEYS.AFFIRMATION_HISTORY);
+    return raw ? JSON.parse(raw) : [];
+  },
+  addToHistory: (affirmation) => {
+    const history = Storage.getHistory();
+    const entry = {
+      id: affirmation.id,
+      text: affirmation.text,
+      date: Storage.todayString(),
+    };
+    const updated = [entry, ...history.filter(h => h.date !== entry.date)].slice(0, 90);
+    storage.set(KEYS.AFFIRMATION_HISTORY, JSON.stringify(updated));
+  },
+
+  // Streak Shield — 2 uses per calendar month for premium users
+  getShieldCount: () => {
+    const currentMonth = Storage.todayString().substring(0, 7);
+    const storedMonth = storage.getString(KEYS.SHIELD_MONTH) ?? '';
+    if (storedMonth !== currentMonth) {
+      storage.set(KEYS.SHIELD_COUNT, 2);
+      storage.set(KEYS.SHIELD_MONTH, currentMonth);
+      return 2;
+    }
+    return storage.getNumber(KEYS.SHIELD_COUNT) ?? 2;
+  },
+  useShield: () => {
+    const count = Storage.getShieldCount();
+    if (count <= 0) return false;
+    const today = Storage.todayString();
+    storage.set(KEYS.LAST_COMPLETED_DATE, today);
+    storage.set(KEYS.SHIELD_COUNT, count - 1);
+    storage.set(KEYS.SHIELD_MONTH, today.substring(0, 7));
+    return true;
+  },
+
   todayString: () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -87,8 +175,7 @@ export const Storage = {
 
   isDoneToday: () => {
     const last = storage.getString(KEYS.LAST_COMPLETED_DATE) ?? '';
-    const today = Storage.todayString();
-    return last === today;
+    return last === Storage.todayString();
   },
 
   markDoneToday: () => {
@@ -101,8 +188,17 @@ export const Storage = {
     })();
 
     const newStreak = last === yesterday ? Storage.getStreak() + 1 : 1;
-    Storage.setStreak(newStreak);
-    Storage.setLastCompletedDate(today);
+    storage.set(KEYS.STREAK, newStreak);
+    storage.set(KEYS.LAST_COMPLETED_DATE, today);
+
+    // Update longest streak
+    const longest = Storage.getLongestStreak();
+    if (newStreak > longest) storage.set(KEYS.LONGEST_STREAK, newStreak);
+
+    // Update total days
+    const total = Storage.getTotalDays();
+    storage.set(KEYS.TOTAL_DAYS, total + 1);
+
     return newStreak;
   },
 };

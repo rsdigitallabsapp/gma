@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 
 // ─── Replace these with your RevenueCat API keys ─────────────────────────────
 const API_KEYS = {
-  ios: 'appl_YOUR_IOS_REVENUECAT_KEY',
+  ios: 'appl_EcfvtVPzBCqlaZRRASiJtcWmsnp',
   android: 'goog_YOUR_ANDROID_REVENUECAT_KEY',
 };
 // ─────────────────────────────────────────────────────────────────────────────
@@ -18,12 +18,17 @@ export const PERIOD_LABELS = {
 };
 
 export function initializePurchases() {
-  if (__DEV__) {
-    Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+  try {
+    if (__DEV__) {
+      Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+    }
+    Purchases.configure({
+      apiKey: Platform.OS === 'ios' ? API_KEYS.ios : API_KEYS.android,
+    });
+  } catch (e) {
+    // Native module not linked yet — requires a full Xcode rebuild after pod install
+    console.warn('[RevenueCat] Initialization skipped:', e.message);
   }
-  Purchases.configure({
-    apiKey: Platform.OS === 'ios' ? API_KEYS.ios : API_KEYS.android,
-  });
 }
 
 // Returns true if the "premium" entitlement is active

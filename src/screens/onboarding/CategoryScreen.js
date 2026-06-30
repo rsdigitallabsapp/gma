@@ -9,6 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, spacing, radius } from '../../theme';
 import { CATEGORIES } from '../../data/categories';
+import { FREE_CATEGORY_LIMIT } from '../../storage';
 
 const ROWS = [];
 for (let i = 0; i < CATEGORIES.length; i += 2) {
@@ -18,11 +19,14 @@ for (let i = 0; i < CATEGORIES.length; i += 2) {
 export function CategoryScreen({ navigation }) {
   const [selected, setSelected] = useState([]);
   const canContinue = selected.length > 0;
+  const atLimit = selected.length >= FREE_CATEGORY_LIMIT;
 
   const toggle = (id) => {
-    setSelected(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setSelected(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= FREE_CATEGORY_LIMIT) return prev;
+      return [...prev, id];
+    });
   };
 
   return (
@@ -40,8 +44,15 @@ export function CategoryScreen({ navigation }) {
         <Text style={styles.eyebrow}>Step 1 of 3</Text>
         <Text style={styles.headline}>What matters{'\n'}most to you?</Text>
         <Text style={styles.sub}>
-          Choose the areas of life you want to affirm each morning. Pick as many as you like.
+          Choose the areas of life you want to affirm each morning.
         </Text>
+        {atLimit && (
+          <View style={styles.limitBanner}>
+            <Text style={styles.limitText}>
+              Free plan: up to {FREE_CATEGORY_LIMIT} categories. Upgrade to Premium for all.
+            </Text>
+          </View>
+        )}
 
         <View style={styles.grid}>
           {ROWS.map((row, rowIndex) => (
@@ -173,4 +184,18 @@ const styles = StyleSheet.create({
   },
   backArrow: { color: colors.textDim, fontSize: 18 },
   backText: { color: colors.textDim, fontSize: 15 },
+
+  limitBanner: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.sm,
+    padding: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.goldDim,
+  },
+  limitText: {
+    color: colors.gold,
+    fontSize: 13,
+    lineHeight: 18,
+  },
 });

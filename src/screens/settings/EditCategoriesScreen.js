@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, spacing, radius } from '../../theme';
 import { CATEGORIES } from '../../data/categories';
-import { Storage } from '../../storage';
+import { Storage, FREE_CATEGORY_LIMIT } from '../../storage';
 
 const ROWS = [];
 for (let i = 0; i < CATEGORIES.length; i += 2) {
@@ -11,12 +11,16 @@ for (let i = 0; i < CATEGORIES.length; i += 2) {
 }
 
 export function EditCategoriesScreen({ navigation }) {
+  const isPremium = Storage.isPremium();
   const [selected, setSelected] = useState(Storage.getCategories());
+  const atLimit = !isPremium && selected.length >= FREE_CATEGORY_LIMIT;
 
   const toggle = (id) => {
-    setSelected(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setSelected(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (!isPremium && prev.length >= FREE_CATEGORY_LIMIT) return prev;
+      return [...prev, id];
+    });
   };
 
   const save = () => {
@@ -42,6 +46,17 @@ export function EditCategoriesScreen({ navigation }) {
         <Text style={styles.sub}>
           Affirmations are picked from these categories each morning.
         </Text>
+        {atLimit && (
+          <TouchableOpacity
+            style={styles.limitBanner}
+            onPress={() => navigation.navigate('Paywall')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.limitText}>
+              Free plan: up to {FREE_CATEGORY_LIMIT} categories. Tap to unlock all →
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.grid}>
           {ROWS.map((row, rowIndex) => (
@@ -162,4 +177,14 @@ const styles = StyleSheet.create({
   },
   btnDisabled: { backgroundColor: colors.goldDim, opacity: 0.5 },
   btnText: { color: colors.bg, fontSize: 15, fontWeight: '600', letterSpacing: 0.3 },
+
+  limitBanner: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.sm,
+    padding: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.goldDim,
+  },
+  limitText: { color: colors.gold, fontSize: 13, lineHeight: 18 },
 });

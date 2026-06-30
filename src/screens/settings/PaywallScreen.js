@@ -104,10 +104,10 @@ export function PaywallScreen({ navigation }) {
           <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
 
-        <Text style={styles.eyebrow}>GMA Premium</Text>
+        <Text style={styles.eyebrow}>ARISE Premium</Text>
         <Text style={styles.headline}>Make every{'\n'}morning yours.</Text>
         <Text style={styles.sub}>
-          Cancel any time. Unlock everything GMA has to offer.
+          Cancel any time. Unlock everything ARISE has to offer.
         </Text>
 
         <View style={styles.featureList}>

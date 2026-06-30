@@ -14,6 +14,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleDisplayName</key>
+	<string>ARISE</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
@@ -23,7 +25,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>12.0</string>
+	<string>16.4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -42,9 +44,9 @@
 		<string>arm64</string>
 	</array>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>GMA needs your microphone to hear you say your affirmation aloud.</string>
+	<string>ARISE needs your microphone to hear you say your affirmation aloud.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>GMA uses speech recognition to confirm you've said your affirmation three times.</string>
+	<string>ARISE uses speech recognition to confirm you've said your affirmation three times.</string>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
@@ -58,8 +60,8 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>gma</string>
-				<string>exp+gma</string>
+				<string>arise</string>
+				<string>exp+arise</string>
 			</array>
 		</dict>
 	</array>
