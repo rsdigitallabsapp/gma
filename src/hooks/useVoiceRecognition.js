@@ -28,7 +28,6 @@ export function useVoiceRecognition({ targetPhrase, totalReps = 3, onComplete, o
 
   const startSession = useCallback(() => {
     ExpoSpeechRecognitionModule.start({
-      lang: 'en-US',
       interimResults: true,
       continuous: false,
     });
@@ -37,9 +36,12 @@ export function useVoiceRecognition({ targetPhrase, totalReps = 3, onComplete, o
   useSpeechRecognitionEvent('result', (event) => {
     if (!activeRef.current || cooldownRef.current) return;
     const transcript = event.results[0]?.transcript ?? '';
+    if (!transcript) return;
     const score = jaccardSimilarity(transcript, targetPhrase);
+    const wordCount = transcript.trim().split(/\s+/).filter(Boolean).length;
 
-    if (score >= 0.4) {
+    // Count if: good similarity OR user clearly spoke a full sentence (4+ words)
+    if (score >= 0.3 || wordCount >= 4) {
       cooldownRef.current = true;
       const next = countRef.current + 1;
       countRef.current = next;
