@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, spacing, radius } from '../../theme';
 
@@ -39,8 +39,13 @@ export function WakeTimeScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
-
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
           <Text style={styles.backArrow}>←</Text>
           <Text style={styles.backText}>Back</Text>
@@ -95,20 +100,22 @@ export function WakeTimeScreen({ navigation, route }) {
 
         </View>
 
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.btn} onPress={handleContinue} activeOpacity={0.85}>
-            <Text style={styles.btnText}>Continue</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={[styles.btn, styles.btnMargin]} onPress={handleContinue} activeOpacity={0.85}>
+          <Text style={styles.btnText}>Continue</Text>
+        </TouchableOpacity>
 
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  container: { flex: 1, paddingHorizontal: spacing.md },
+  scroll: { flex: 1 },
+  container: {
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.xl,
+  },
 
   backBtn: {
     flexDirection: 'row',
@@ -144,28 +151,28 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingVertical: spacing.lg,
+    paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
     gap: 8,
   },
 
-  column: { alignItems: 'center', gap: 12 },
+  column: { alignItems: 'center', gap: 8 },
   arrowBtn: { padding: 8 },
   arrow: { color: colors.gold, fontSize: 16 },
   timeValue: {
     fontFamily: fonts.display,
-    fontSize: 56,
+    fontSize: 40,
     color: colors.text,
-    lineHeight: 64,
-    minWidth: 72,
+    lineHeight: 48,
+    minWidth: 56,
     textAlign: 'center',
   },
   colon: {
     fontFamily: fonts.display,
-    fontSize: 48,
+    fontSize: 34,
     color: colors.textDim,
-    marginBottom: 8,
+    marginBottom: 6,
     paddingHorizontal: 4,
   },
 
@@ -185,18 +192,12 @@ const styles = StyleSheet.create({
   periodText: { color: colors.textDim, fontSize: 14, fontWeight: '600' },
   periodTextActive: { color: colors.bg },
 
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: spacing.md,
-    right: spacing.md,
-    paddingBottom: spacing.xl,
-  },
   btn: {
     backgroundColor: colors.gold,
     borderRadius: 999,
     paddingVertical: 18,
     alignItems: 'center',
   },
+  btnMargin: { marginTop: spacing.lg },
   btnText: { color: colors.bg, fontSize: 16, fontWeight: '600', letterSpacing: 0.5 },
 });

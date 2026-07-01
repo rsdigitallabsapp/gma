@@ -39,7 +39,7 @@ export function useVoiceRecognition({ targetPhrase, totalReps = 3, onComplete, o
     const transcript = event.results[0]?.transcript ?? '';
     const score = jaccardSimilarity(transcript, targetPhrase);
 
-    if (score >= 0.65) {
+    if (score >= 0.4) {
       cooldownRef.current = true;
       const next = countRef.current + 1;
       countRef.current = next;

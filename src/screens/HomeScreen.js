@@ -276,7 +276,7 @@ export function HomeScreen({ navigation }) {
           {/* Left — animated flame + count-up */}
           <View style={styles.streakLeft}>
             <Animated.View style={{ transform: [{ scale: flameScale }] }}>
-              <FlameIcon size={40} color={streak > 0 ? STREAK_COLOR : colors.textMuted} />
+              <FlameIcon size={48} color={streak > 0 ? STREAK_COLOR : colors.textMuted} />
             </Animated.View>
             <Text style={[styles.streakNumber, streak === 0 && { color: colors.textMuted }]}>
               {displayStreak}
@@ -366,7 +366,7 @@ export function HomeScreen({ navigation }) {
             <View style={styles.affirmationCardDivider} />
 
             {isDone ? (
-              <Text style={styles.doneBadge}>Said it</Text>
+              <Text style={styles.doneBadge}>✅ Completed</Text>
             ) : (
               <TouchableOpacity style={styles.sayItBtn} onPress={() => navigation.replace('Affirmation')}>
                 <Text style={styles.sayItBtnText}>Say it now</Text>
@@ -396,6 +396,8 @@ export function HomeScreen({ navigation }) {
               <Text style={styles.chevron}>›</Text>
             </View>
           </TouchableOpacity>
+
+          <Text style={[styles.sectionLabel, { marginTop: spacing.sm, marginBottom: spacing.xs }]}>Premium</Text>
 
           <TouchableOpacity style={styles.settingRow} onPress={() => navigation.navigate(isPremium ? 'CustomAffirmations' : 'Paywall')} activeOpacity={0.7}>
             <View style={styles.settingLabelRow}>
@@ -479,9 +481,9 @@ const styles = StyleSheet.create({
   },
   streakNumber: {
     fontFamily: fonts.display,
-    fontSize: 38,
+    fontSize: 30,
     color: STREAK_COLOR,
-    lineHeight: 42,
+    lineHeight: 34,
     marginTop: 2,
   },
   streakLabel: {

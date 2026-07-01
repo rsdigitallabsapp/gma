@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
   },
   logoWrap: {
     alignItems: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
   },
   logo: {
-    width: 180,
-    height: 180,
+    width: 120,
+    height: 120,
   },
   content: {
     flex: 1,
@@ -125,15 +125,15 @@ const styles = StyleSheet.create({
   },
   headline: {
     fontFamily: fonts.display,
-    fontSize: 32,
+    fontSize: 26,
     color: colors.text,
-    lineHeight: 42,
-    marginBottom: spacing.md,
+    lineHeight: 34,
+    marginBottom: spacing.sm,
   },
   body: {
     color: '#C4B9A8',
-    fontSize: 16,
-    lineHeight: 26,
+    fontSize: 15,
+    lineHeight: 24,
   },
   bottom: {
     paddingBottom: spacing.lg,

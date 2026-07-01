@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 import { colors, fonts, spacing, radius } from '../../theme';
@@ -10,12 +10,12 @@ const PERMS = [
   {
     id: 'mic',
     title: 'Microphone & Speech',
-    description: 'So you can say your affirmation aloud and we can confirm all three repetitions.',
+    description: 'Speak your affirmations aloud.',
   },
   {
     id: 'notifications',
     title: 'Morning Reminder',
-    description: 'A single notification at your wake-up time. Nothing else, ever.',
+    description: 'One gentle reminder at your chosen time.',
   },
 ];
 
@@ -49,8 +49,13 @@ export function PermissionsScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
-
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
           <Text style={styles.backArrow}>←</Text>
           <Text style={styles.backText}>Back</Text>
@@ -105,14 +110,15 @@ export function PermissionsScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
 
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  container: { flex: 1, paddingHorizontal: spacing.md },
+  scroll: { flex: 1 },
+  container: { paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
 
   header: { marginTop: spacing.lg, marginBottom: spacing.lg },
   eyebrow: {
@@ -162,7 +168,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
 
-  footer: { marginTop: 'auto', paddingBottom: spacing.lg, gap: 12 },
+  footer: { marginTop: spacing.lg, paddingBottom: spacing.sm, gap: 12 },
   btn: {
     backgroundColor: colors.gold,
     borderRadius: 999,

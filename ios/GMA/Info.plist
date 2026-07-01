@@ -24,8 +24,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>16.4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -43,6 +41,8 @@
 	<array>
 		<string>arm64</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ARISE may access your photo library to let you set a profile photo.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ARISE needs your microphone to hear you say your affirmation aloud.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
