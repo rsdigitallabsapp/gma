@@ -367,7 +367,7 @@ export function HomeScreen({ navigation }) {
           </TouchableOpacity>
         )}
 
-        {/* Focus card */}
+        {/* Focus card — always visible; tapping locks to Paywall for free users */}
         {isPremium ? (
           activeFocus && focusCategory ? (
             <TouchableOpacity style={styles.focusCard} onPress={() => navigation.navigate('Focus')} activeOpacity={0.85}>
@@ -384,7 +384,16 @@ export function HomeScreen({ navigation }) {
               <Text style={styles.focusCardEmptySub}>Commit one area. Reinforce one mindset.</Text>
             </TouchableOpacity>
           )
-        ) : null}
+        ) : (
+          <TouchableOpacity style={styles.focusCardLocked} onPress={() => navigation.navigate('Paywall')} activeOpacity={0.85}>
+            <View style={styles.focusLockedLeft}>
+              <View style={styles.focusLockBadge}><Text style={styles.focusLockBadgeText}>PREMIUM</Text></View>
+              <Text style={styles.focusCardEmptyTitle}>Set today's focus</Text>
+              <Text style={styles.focusCardEmptySub}>Commit to one category for the day, week, or longer.</Text>
+            </View>
+            <Text style={styles.focusLockIcon}>🔒</Text>
+          </TouchableOpacity>
+        )}
 
         {/* Today's affirmation */}
         <View style={styles.section}>
@@ -683,6 +692,29 @@ const styles = StyleSheet.create({
   },
   focusCardEmptyTitle: { color: colors.gold, fontSize: 14, fontWeight: '600', marginBottom: 2 },
   focusCardEmptySub: { color: colors.textMuted, fontSize: 12 },
+
+  focusCardLocked: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.sm,
+    marginBottom: spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    opacity: 0.85,
+  },
+  focusLockedLeft: { flex: 1 },
+  focusLockBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.goldDim,
+    borderRadius: radius.full,
+    paddingHorizontal: 7, paddingVertical: 2,
+    marginBottom: 4,
+  },
+  focusLockBadgeText: { color: colors.gold, fontSize: 9, fontWeight: '700', letterSpacing: 1 },
+  focusLockIcon: { fontSize: 18, marginLeft: spacing.sm },
   lockLabel: {
     color: colors.gold,
     fontSize: 11,
