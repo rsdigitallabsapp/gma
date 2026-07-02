@@ -111,6 +111,8 @@ export function HomeScreen({ navigation }) {
   const [showKeepModal, setShowKeepModal] = useState(false);
   const [keepDuration, setKeepDuration] = useState('week');
   const [displayStreak, setDisplayStreak] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(null); // null = all selected
+  const [showCategorySheet, setShowCategorySheet] = useState(false);
 
   // Animation values
   const flameScale   = useRef(new Animated.Value(0.6)).current;
@@ -236,15 +238,32 @@ export function HomeScreen({ navigation }) {
     );
   };
 
-  const handleShuffle = () => {
+  const pickRandom = (categoryId, excludeId) => {
     const categories = Storage.getCategories();
-    const base = AFFIRMATIONS.filter(a => categories.includes(a.category));
+    const base = AFFIRMATIONS.filter(a =>
+      categoryId ? a.category === categoryId : categories.includes(a.category)
+    );
     const custom = isPremium
       ? Storage.getCustomAffirmations().map(a => ({ ...a, category: 'custom' }))
       : [];
-    const pool = [...base, ...custom].filter(a => a.id !== todayAffirmation.id);
-    if (pool.length === 0) return;
-    const newAff = pool[Math.floor(Math.random() * pool.length)];
+    const pool = [...base, ...custom].filter(a => a.id !== excludeId);
+    if (pool.length === 0) return null;
+    return pool[Math.floor(Math.random() * pool.length)];
+  };
+
+  const handleShuffle = () => {
+    const newAff = pickRandom(activeCategory, todayAffirmation.id);
+    if (!newAff) return;
+    Storage.clearAffirmationLock();
+    Storage.setTodayAffirmation(newAff);
+    setState(prev => ({ ...prev, todayAffirmation: newAff, activeLockLabel: null, isFav: Storage.isFavorite(newAff.id) }));
+  };
+
+  const handleCategorySelect = (categoryId) => {
+    setActiveCategory(categoryId);
+    setShowCategorySheet(false);
+    const newAff = pickRandom(categoryId, todayAffirmation.id);
+    if (!newAff) return;
     Storage.clearAffirmationLock();
     Storage.setTodayAffirmation(newAff);
     setState(prev => ({ ...prev, todayAffirmation: newAff, activeLockLabel: null, isFav: Storage.isFavorite(newAff.id) }));
@@ -341,7 +360,19 @@ export function HomeScreen({ navigation }) {
 
         {/* Today's affirmation */}
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Today's affirmation</Text>
+          <View style={styles.sectionRow}>
+            <Text style={styles.sectionLabel}>Today's affirmation</Text>
+            <TouchableOpacity
+              style={styles.categoryChip}
+              onPress={() => isPremium ? setShowCategorySheet(true) : navigation.navigate('Paywall')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.categoryChipText}>
+                {activeCategory ? CATEGORIES.find(c => c.id === activeCategory)?.label : 'All'} ▾
+              </Text>
+              {!isPremium && <View style={styles.categoryLock}><Text style={styles.categoryLockText}>PRO</Text></View>}
+            </TouchableOpacity>
+          </View>
           <View style={styles.affirmationCard}>
             {activeLockLabel && <Text style={styles.lockLabel}>{activeLockLabel}</Text>}
             <Text style={styles.affirmationText}>{todayAffirmation.text}</Text>
@@ -428,6 +459,45 @@ export function HomeScreen({ navigation }) {
         </View>
 
       </ScrollView>
+
+      {/* Category picker sheet */}
+      <Modal visible={showCategorySheet} transparent animationType="slide" onRequestClose={() => setShowCategorySheet(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setShowCategorySheet(false)}>
+          <Pressable style={styles.sheet} onPress={() => {}}>
+            <View style={styles.sheetHandle} />
+            <Text style={styles.sheetQuestion}>Choose a focus category</Text>
+
+            <TouchableOpacity
+              style={[styles.categoryRow, activeCategory === null && styles.categoryRowActive]}
+              onPress={() => handleCategorySelect(null)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.categoryRowText, activeCategory === null && styles.categoryRowTextActive]}>
+                All categories
+              </Text>
+              {activeCategory === null && <Text style={styles.categoryRowCheck}>✓</Text>}
+            </TouchableOpacity>
+
+            {selectedCategories.map(c => (
+              <TouchableOpacity
+                key={c.id}
+                style={[styles.categoryRow, activeCategory === c.id && styles.categoryRowActive]}
+                onPress={() => handleCategorySelect(c.id)}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.categoryRowText, activeCategory === c.id && styles.categoryRowTextActive]}>
+                  {c.label}
+                </Text>
+                {activeCategory === c.id && <Text style={styles.categoryRowCheck}>✓</Text>}
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowCategorySheet(false)} activeOpacity={0.7}>
+              <Text style={styles.cancelBtnText}>Cancel</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <Modal visible={showKeepModal} transparent animationType="slide" onRequestClose={() => setShowKeepModal(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setShowKeepModal(false)}>
@@ -590,13 +660,50 @@ const styles = StyleSheet.create({
   premiumBannerArrow: { color: colors.gold, fontSize: 24, lineHeight: 26 },
 
   section: { marginBottom: spacing.md },
+  sectionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.xs,
+  },
   sectionLabel: {
     color: colors.textDim,
     fontSize: 11,
     letterSpacing: 2,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
   },
+  categoryChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.full,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  categoryChipText: { color: colors.gold, fontSize: 11, fontWeight: '600' },
+  categoryLock: {
+    backgroundColor: colors.goldDim,
+    borderRadius: radius.full,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+  },
+  categoryLockText: { color: colors.gold, fontSize: 8, fontWeight: '700', letterSpacing: 0.5 },
+
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  categoryRowActive: {},
+  categoryRowText: { color: colors.textDim, fontSize: 16 },
+  categoryRowTextActive: { color: colors.text, fontWeight: '600' },
+  categoryRowCheck: { color: colors.gold, fontSize: 16 },
   lockLabel: {
     color: colors.gold,
     fontSize: 11,
