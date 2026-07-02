@@ -55,10 +55,12 @@ export function useVoiceRecognition({ targetPhrase, totalReps = 3, onComplete, o
         isListeningRef.current = false;
         setTimeout(() => onComplete?.(), 400);
       } else {
+        // Explicitly stop before restarting — iOS won't allow two concurrent sessions
+        ExpoSpeechRecognitionModule.stop();
         setTimeout(() => {
           cooldownRef.current = false;
           if (activeRef.current) startSession();
-        }, 900);
+        }, 1000);
       }
     }
   });
