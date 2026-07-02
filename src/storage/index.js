@@ -22,6 +22,9 @@ const KEYS = {
   TOTAL_DAYS: 'totalDays',
   SHIELD_COUNT: 'shieldCount',
   SHIELD_MONTH: 'shieldMonth',
+  FOCUS_CATEGORY: 'focusCategory',
+  FOCUS_EXPIRES_DATE: 'focusExpiresDate',
+  FOCUS_SET_DATE: 'focusSetDate',
 };
 
 const FREE_CATEGORY_LIMIT = 5;
@@ -145,6 +148,34 @@ export const Storage = {
     };
     const updated = [entry, ...history.filter(h => h.date !== entry.date)].slice(0, 90);
     storage.set(KEYS.AFFIRMATION_HISTORY, JSON.stringify(updated));
+  },
+
+  // Focus Mode — premium: commit to one category for a period
+  getFocus: () => {
+    const cat = storage.getString(KEYS.FOCUS_CATEGORY);
+    if (!cat) return null;
+    const expires = storage.getString(KEYS.FOCUS_EXPIRES_DATE) ?? '';
+    if (expires !== 'forever' && expires < Storage.todayString()) {
+      storage.remove(KEYS.FOCUS_CATEGORY);
+      storage.remove(KEYS.FOCUS_EXPIRES_DATE);
+      storage.remove(KEYS.FOCUS_SET_DATE);
+      return null;
+    }
+    return {
+      categoryId: cat,
+      expires,
+      setDate: storage.getString(KEYS.FOCUS_SET_DATE) ?? Storage.todayString(),
+    };
+  },
+  setFocus: (categoryId, expiresDate) => {
+    storage.set(KEYS.FOCUS_CATEGORY, categoryId);
+    storage.set(KEYS.FOCUS_EXPIRES_DATE, expiresDate ?? 'forever');
+    storage.set(KEYS.FOCUS_SET_DATE, Storage.todayString());
+  },
+  clearFocus: () => {
+    storage.remove(KEYS.FOCUS_CATEGORY);
+    storage.remove(KEYS.FOCUS_EXPIRES_DATE);
+    storage.remove(KEYS.FOCUS_SET_DATE);
   },
 
   // Streak Shield — 2 uses per calendar month for premium users

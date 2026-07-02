@@ -18,6 +18,7 @@ import { CustomAffirmationsScreen } from '../screens/settings/CustomAffirmations
 import { AddAffirmationScreen } from '../screens/settings/AddAffirmationScreen';
 import { HistoryScreen } from '../screens/HistoryScreen';
 import { StatsScreen } from '../screens/StatsScreen';
+import { FocusScreen } from '../screens/FocusScreen';
 
 const Stack = createNativeStackNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -91,6 +92,7 @@ export function RootNavigator() {
         <Stack.Screen name="AddAffirmation" component={AddAffirmationScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="Stats" component={StatsScreen} />
+        <Stack.Screen name="Focus" component={FocusScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
