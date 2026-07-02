@@ -10,7 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { colors, fonts, spacing, radius } from '../theme';
 import { Storage } from '../storage';
 import { CATEGORIES } from '../data/categories';
-import { AFFIRMATIONS } from '../data/affirmations';
+import { AFFIRMATIONS, getDailyAffirmation } from '../data/affirmations';
 
 const logo = require('../../assets/logo.png');
 const STREAK_COLOR = '#C6A67B';
@@ -76,7 +76,13 @@ function loadState() {
   const isPremium = Storage.isPremium();
   const categories = Storage.getCategories();
   const lockedAff = Storage.getLockedAffirmation();
-  const todayAff = lockedAff || Storage.getTodayAffirmation() || { text: '' };
+  let todayAff = lockedAff || Storage.getTodayAffirmation();
+  if (!todayAff || !todayAff.text) {
+    const custom = isPremium ? Storage.getCustomAffirmations() : [];
+    todayAff = getDailyAffirmation(categories, Storage.getSeenIds(), custom);
+    if (todayAff) Storage.setTodayAffirmation(todayAff);
+    else todayAff = { text: '' };
+  }
   const weekDays = getWeekDays();
   return {
     streak: Storage.getStreak(),
