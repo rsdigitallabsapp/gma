@@ -1,4 +1,4 @@
-package com.gma
+package com.rsdigitallabs.arise
 
 import android.content.BroadcastReceiver
 import android.content.Context

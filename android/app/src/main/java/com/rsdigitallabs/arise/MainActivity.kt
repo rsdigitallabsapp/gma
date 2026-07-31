@@ -1,4 +1,4 @@
-package com.gma
+package com.rsdigitallabs.arise
 
 import android.os.Build
 import android.os.Bundle

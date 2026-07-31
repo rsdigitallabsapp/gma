@@ -5,6 +5,9 @@
     "scheme": "arise",
     "version": "1.0.0",
     "orientation": "portrait",
+    "android": {
+      "package": "com.rsdigitallabs.arise"
+    },
     "userInterfaceStyle": "dark",
     "plugins": [
       [

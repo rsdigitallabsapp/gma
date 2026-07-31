@@ -1,4 +1,4 @@
-package com.gma
+package com.rsdigitallabs.arise
 
 import android.app.Application
 import android.content.res.Configuration
