@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 // ─── Replace these with your RevenueCat API keys ─────────────────────────────
 const API_KEYS = {
   ios: 'appl_EcfvtVPzBCqlaZRRASiJtcWmsnp',
-  android: 'goog_YOUR_ANDROID_REVENUECAT_KEY',
+  android: 'goog_BlDRxMgDZbQBMWxwSARvENBdDFe',
 };
 // ─────────────────────────────────────────────────────────────────────────────
 
