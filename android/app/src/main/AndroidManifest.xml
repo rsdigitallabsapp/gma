@@ -2,6 +2,7 @@
   xmlns:tools="http://schemas.android.com/tools">
 
   <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <!-- OPTIONAL PERMISSIONS, REMOVE WHATEVER YOU DO NOT NEED -->
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
@@ -16,6 +17,11 @@
       <action android:name="android.intent.action.VIEW" />
       <category android:name="android.intent.category.BROWSABLE" />
       <data android:scheme="https" />
+    </intent>
+    <!-- Required for expo-speech-recognition to discover a speech recognition service -->
+    <package android:name="com.google.android.googlequicksearchbox" />
+    <intent>
+      <action android:name="android.speech.RecognitionService" />
     </intent>
   </queries>
 
