@@ -34,7 +34,7 @@ export function useVoiceRecognition({ targetPhrase, totalReps = 3, onComplete, o
   }, []);
 
   useSpeechRecognitionEvent('result', (event) => {
-    if (!activeRef.current || cooldownRef.current) return;
+    if (!activeRef.current || cooldownRef.current || !event.isFinal) return;
     const transcript = event.results[0]?.transcript ?? '';
     if (!transcript) return;
     const score = jaccardSimilarity(transcript, targetPhrase);
