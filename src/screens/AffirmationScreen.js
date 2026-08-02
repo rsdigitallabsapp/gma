@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
   Modal,
+  ScrollView,
   Animated as RNAnimated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -208,6 +209,11 @@ export function AffirmationScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
       <RNAnimated.View style={[styles.container, { opacity: fadeAnim }]}>
 
         {/* Streak eyebrow */}
@@ -346,15 +352,18 @@ export function AffirmationScreen({ navigation }) {
         )}
 
       </RNAnimated.View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
+  scrollContent: { flexGrow: 1 },
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: spacing.md,
+    paddingBottom: spacing.lg,
     alignItems: 'center',
   },
   eyebrow: {
@@ -452,8 +461,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   skipBtn: {
-    position: 'absolute',
-    bottom: spacing.lg,
+    marginTop: spacing.lg,
     paddingVertical: 10,
     paddingHorizontal: spacing.sm,
   },

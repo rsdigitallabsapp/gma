@@ -187,5 +187,5 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   backArrow: { color: colors.textDim, fontSize: 18 },
-  backText: { color: colors.textDim, fontSize: 15 },
+  backText: { color: colors.textDim, fontSize: 15, lineHeight: 20, includeFontPadding: false },
 });
