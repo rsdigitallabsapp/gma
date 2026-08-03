@@ -1,8 +1,27 @@
-import { Storage } from '../storage';
+// One-time script: seeds Firestore's `affirmations` collection with the
+// current built-in pool, so Firestore starts out identical to what ships
+// in src/data/affirmations.js. After this runs once, all future edits
+// happen by hand in the Firebase Console — this script does not need to
+// be run again (and re-running it just overwrites docs with these values).
+//
+// Usage:
+//   1. Download a service account key from Firebase Console → Project
+//      settings → Service accounts → Generate new private key.
+//   2. Save it as scripts/serviceAccountKey.json (gitignored).
+//   3. node scripts/seedAffirmations.js
 
-// Guaranteed offline fallback — used until the first successful Firestore
-// sync, or if Firestore is ever unreachable.
-export const BUILTIN_AFFIRMATIONS = [
+const admin = require('firebase-admin');
+const path = require('path');
+
+const serviceAccount = require(path.join(__dirname, 'serviceAccountKey.json'));
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+
+const AFFIRMATIONS = [
   // WEALTH
   { id: 'w1',  category: 'wealth',        text: 'I am a money magnet' },
   { id: 'w2',  category: 'wealth',        text: 'Wealth flows to me effortlessly' },
@@ -189,33 +208,18 @@ export const BUILTIN_AFFIRMATIONS = [
   { id: 'l10', category: 'learning',      text: 'My mind is sharp, focused, and always growing' },
 ];
 
-// Firestore-synced pool if available (and non-empty), else the built-in list.
-export function getAffirmationsPool() {
-  const remote = Storage.getRemoteAffirmations();
-  return remote.length > 0 ? remote : BUILTIN_AFFIRMATIONS;
-}
-
-export function getDailyAffirmation(selectedCategories, seenIds = [], customAffirmations = []) {
-  const today = new Date();
-  const dateStr = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
-  const seed = parseInt(dateStr, 10);
-
-  // Custom affirmations take priority — user wrote them for a reason
-  if (customAffirmations.length > 0) {
-    const unseen = customAffirmations.filter(a => !seenIds.includes(a.id));
-    const pool = unseen.length > 0 ? unseen : customAffirmations;
-    return pool[seed % pool.length];
+async function seed() {
+  const batch = db.batch();
+  for (const { id, category, text } of AFFIRMATIONS) {
+    batch.set(db.collection('affirmations').doc(id), { category, text });
   }
-
-  const allAffirmations = getAffirmationsPool();
-
-  // Pool filtered by selected categories
-  const pool = selectedCategories.length > 0
-    ? allAffirmations.filter(a => selectedCategories.includes(a.category))
-    : allAffirmations;
-
-  let available = pool.filter(a => !seenIds.includes(a.id));
-  if (available.length === 0) available = pool;
-
-  return available[seed % available.length];
+  await batch.commit();
+  console.log(`Seeded ${AFFIRMATIONS.length} affirmations.`);
 }
+
+seed()
+  .then(() => process.exit(0))
+  .catch(err => {
+    console.error(err);
+    process.exit(1);
+  });

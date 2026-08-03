@@ -14,6 +14,7 @@ const KEYS = {
   TODAY_AFFIRMATION: 'todayAffirmation',
   IS_PREMIUM: 'isPremium',
   CUSTOM_AFFIRMATIONS: 'customAffirmations',
+  REMOTE_AFFIRMATIONS: 'remoteAffirmations',
   FAVORITES: 'favorites',
   LOCKED_AFFIRMATION: 'lockedAffirmation',
   LOCK_EXPIRES_DATE: 'lockExpiresDate',
@@ -98,6 +99,14 @@ export const Storage = {
     const current = Storage.getCustomAffirmations();
     storage.set(KEYS.CUSTOM_AFFIRMATIONS, JSON.stringify(current.filter(a => a.id !== id)));
   },
+
+  // Remote affirmations — synced from Firestore, cached for instant offline reads
+  getRemoteAffirmations: () => {
+    const raw = storage.getString(KEYS.REMOTE_AFFIRMATIONS);
+    return raw ? JSON.parse(raw) : [];
+  },
+  setRemoteAffirmations: (list) =>
+    storage.set(KEYS.REMOTE_AFFIRMATIONS, JSON.stringify(list)),
 
   // Favorites
   getFavorites: () => {

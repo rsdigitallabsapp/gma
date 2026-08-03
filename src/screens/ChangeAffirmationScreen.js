@@ -6,7 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, spacing, radius } from '../theme';
 import { Storage } from '../storage';
-import { AFFIRMATIONS } from '../data/affirmations';
+import { getAffirmationsPool } from '../data/affirmations';
 import { CATEGORIES } from '../data/categories';
 
 const DURATIONS = [
@@ -41,7 +41,7 @@ export function ChangeAffirmationScreen({ navigation }) {
 
   // All affirmations from user's categories + custom if premium
   const pool = useMemo(() => {
-    const base = AFFIRMATIONS.filter(a => selectedCategories.includes(a.category));
+    const base = getAffirmationsPool().filter(a => selectedCategories.includes(a.category));
     const custom = isPremium
       ? Storage.getCustomAffirmations().map(a => ({ ...a, category: 'custom' }))
       : [];

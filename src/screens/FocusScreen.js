@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, spacing, radius } from '../theme';
 import { CATEGORIES } from '../data/categories';
-import { AFFIRMATIONS } from '../data/affirmations';
+import { getAffirmationsPool } from '../data/affirmations';
 import { Storage } from '../storage';
 
 const DURATIONS = [
@@ -44,7 +44,7 @@ export function FocusScreen({ navigation }) {
     Storage.setFocus(chosenCategory, expires);
 
     // Pick a new affirmation from the focused category and store it
-    const pool = AFFIRMATIONS.filter(a => a.category === chosenCategory);
+    const pool = getAffirmationsPool().filter(a => a.category === chosenCategory);
     const seenIds = Storage.getSeenIds();
     const unseen = pool.filter(a => !seenIds.includes(a.id));
     const source = unseen.length > 0 ? unseen : pool;

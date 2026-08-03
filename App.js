@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation';
 import { initializePurchases, checkPremiumStatus, addCustomerInfoListener } from './src/services/purchases';
+import { syncAffirmations } from './src/services/affirmationsSync';
 import { Storage } from './src/storage';
 
 SplashScreen.preventAutoHideAsync();
@@ -20,6 +21,9 @@ export default function App() {
   });
 
   useEffect(() => {
+    // Sync the latest affirmation pool from Firestore → local MMKV cache
+    syncAffirmations();
+
     // Sync RevenueCat entitlement → local MMKV cache on launch
     checkPremiumStatus().then(isPremium => {
       if (isPremium === true) Storage.setPremium(true);

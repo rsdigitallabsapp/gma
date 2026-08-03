@@ -10,7 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { colors, fonts, spacing, radius } from '../theme';
 import { Storage } from '../storage';
 import { CATEGORIES } from '../data/categories';
-import { AFFIRMATIONS, getDailyAffirmation } from '../data/affirmations';
+import { getAffirmationsPool, getDailyAffirmation } from '../data/affirmations';
 
 const logo = require('../../assets/logo.png');
 const STREAK_COLOR = '#C6A67B';
@@ -264,7 +264,7 @@ export function HomeScreen({ navigation }) {
   const handleShuffle = () => {
     const focusCatId = activeFocus?.categoryId ?? null;
     const categories = Storage.getCategories();
-    const base = AFFIRMATIONS.filter(a =>
+    const base = getAffirmationsPool().filter(a =>
       focusCatId ? a.category === focusCatId : categories.includes(a.category)
     );
     const custom = isPremium
