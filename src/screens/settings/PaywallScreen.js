@@ -101,7 +101,7 @@ export function PaywallScreen({ navigation }) {
 
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
           <Text style={styles.backArrow}>←</Text>
-          <Text style={styles.backText}>Back</Text>
+          <Text style={styles.backText} allowFontScaling={false}>Back</Text>
         </TouchableOpacity>
 
         <Text style={styles.eyebrow}>ARISE Premium</Text>
@@ -166,10 +166,10 @@ export function PaywallScreen({ navigation }) {
                         <Text style={styles.savingsText}>Save {savings}%</Text>
                       </View>
                     )}
-                    <Text style={[styles.planPrice, isSelected && styles.planPriceSelected]}>
+                    <Text style={[styles.planPrice, isSelected && styles.planPriceSelected]} numberOfLines={1}>
                       {pkg.product.priceString}
                     </Text>
-                    <Text style={styles.planPeriod}>/ {period}</Text>
+                    <Text style={styles.planPeriod} numberOfLines={1}>/ {period}</Text>
                   </View>
                 </TouchableOpacity>
               );
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gold,
     backgroundColor: colors.surfaceElevated,
   },
-  planLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  planLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flexShrink: 1 },
   radio: {
     width: 20,
     height: 20,
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   popularBadge: { marginTop: 2 },
   popularText: { color: colors.gold, fontSize: 12, fontWeight: '500' },
 
-  planRight: { alignItems: 'flex-end', gap: 2 },
+  planRight: { alignItems: 'flex-end', gap: 2, flexShrink: 0 },
   savingsBadge: {
     backgroundColor: colors.goldDim,
     borderRadius: radius.full,

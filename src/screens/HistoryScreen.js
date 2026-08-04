@@ -36,7 +36,7 @@ export function HistoryScreen({ navigation }) {
       <View style={styles.navRow}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
           <Text style={styles.backArrow}>←</Text>
-          <Text style={styles.backText}>Back</Text>
+          <Text style={styles.backText} allowFontScaling={false}>Back</Text>
         </TouchableOpacity>
       </View>
 

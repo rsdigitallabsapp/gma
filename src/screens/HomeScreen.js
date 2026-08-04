@@ -11,6 +11,7 @@ import { colors, fonts, spacing, radius } from '../theme';
 import { Storage } from '../storage';
 import { CATEGORIES } from '../data/categories';
 import { getAffirmationsPool, getDailyAffirmation } from '../data/affirmations';
+import { LockIcon } from '../components/LockIcon';
 
 const logo = require('../../assets/logo.png');
 const STREAK_COLOR = '#C6A67B';
@@ -438,7 +439,7 @@ export function HomeScreen({ navigation }) {
           <TouchableOpacity style={styles.settingRow} onPress={() => navigation.navigate('EditWakeTime')} activeOpacity={0.7}>
             <Text style={styles.settingKey}>Wake-up reminder</Text>
             <View style={styles.settingRight}>
-              <Text style={styles.settingValue}>{wakeLabel}</Text>
+              <Text style={styles.settingValue} numberOfLines={1}>{wakeLabel}</Text>
               <Text style={styles.chevron}>›</Text>
             </View>
           </TouchableOpacity>
@@ -461,7 +462,13 @@ export function HomeScreen({ navigation }) {
               {!isPremium && <View style={styles.premiumBadge}><Text style={styles.premiumBadgeText}>PREMIUM</Text></View>}
             </View>
             <View style={styles.settingRight}>
-              <Text style={styles.settingValue}>{isPremium ? (customCount === 0 ? 'None yet' : `${customCount} saved`) : 'Unlock'}</Text>
+              {isPremium ? (
+                <Text style={styles.settingValue} numberOfLines={1}>
+                  {customCount === 0 ? 'None yet' : `${customCount} saved`}
+                </Text>
+              ) : (
+                <LockIcon size={14} color={colors.textDim} />
+              )}
               <Text style={styles.chevron}>›</Text>
             </View>
           </TouchableOpacity>
@@ -776,7 +783,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   settingLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  settingKey: { color: colors.text, fontSize: 15 },
+  settingKey: { color: colors.text, fontSize: 15, flexShrink: 0 },
   settingRight: { flexDirection: 'row', alignItems: 'center', gap: 4, maxWidth: 180 },
   settingValue: { color: colors.textDim, fontSize: 14, textAlign: 'right', flexShrink: 1 },
   chevron: { color: colors.textMuted, fontSize: 20, lineHeight: 22 },
